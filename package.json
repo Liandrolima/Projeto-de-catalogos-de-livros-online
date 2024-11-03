@@ -1,0 +1,18 @@
+{
+  "name": "projeto-de-catalogos-de-livros-online",
+  "version": "1.0.0",
+  "description": "Desenvolva um sistema de catálogo de livros online que permita aos usuários visualizar, adicionar, buscar e classificar livros. As informações dos livros devem ser armazenadas em um arquivo JSON. Cada livro deve conter detalhes como título, autor, gênero, ano de publicação e avaliações dos usuários.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "fs": "^0.0.1-security"
+  }
+}
