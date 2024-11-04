@@ -21,6 +21,17 @@ const catalogoLivros = [];
     const avaliacao = document.querySelector('#livroAvaliacao').value;
 
     const livro = { titulo, autor, genero, ano, avaliacao };
+
+    // Verifica se o livro já está no catálogo
+
+    const livroExistente = catalogoLivros.some(item => item.titulo === livro.titulo && item.autor === livro.autor);
+
+    if (livroExistente) {
+        alert('O livro já está no catálogo!');
+        return;
+    }
+
+    
     catalogoLivros.push(livro);
 
     try {
@@ -43,12 +54,14 @@ const catalogoLivros = [];
     
   });
 
-  function listarLivros() {
+  function listarLivros(filtro = '') {
     const catalogoList = document.querySelector('#catalogoList');
     catalogoList.innerHTML = ''; // Limpa a lista antes de atualizar
 
     // Percorre o array de livros e exibe cada um
-    catalogoLivros.forEach((livro, index) => {
+    catalogoLivros
+    .filter(livro => livro.titulo.toLowerCase().includes(filtro.toLowerCase()))
+    .forEach((livro, index) => {
       const listItem = document.createElement('li');
       listItem.innerHTML = `
         <span class="titulo">${livro.titulo.toUpperCase()}</span>
@@ -129,14 +142,27 @@ const catalogoLivros = [];
 
       catalogoList.appendChild(listItem);
     });
+    console.log('Livros exibidos:', catalogoLivros.length);
   }
 
 
-  document.querySelector('#exibirLivrosBtn').addEventListener('click', () => listarLivros());
+  document.querySelector('#exibirLivrosBtn').addEventListener('click', () => {
+    console.log('Exibir Livros clicado');
+    listarLivros();
+  });
+  
+  document.querySelector('#exibirLivrosBtn').addEventListener('click', () => {
+    console.log('Exibir Livros clicado');
+    listarLivros();
+  });
+  
   document.querySelector('#buscarLivrosBtn').addEventListener('click', () => {
+    console.log('Buscar Livros clicado');
     const filtro = document.querySelector('#buscaInput').value;
     listarLivros(filtro);
   });
+  
+  
 
   // Carrega o catálogo ao iniciar
   carregarCatalogo();

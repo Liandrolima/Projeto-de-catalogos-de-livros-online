@@ -1,18 +1,3 @@
 [
   
-  {
-    "titulo": "BÍBLIA",
-    "autor": "DEUS",
-    "genero": "RELIGIOSO",
-    "ano": 400,
-    "avaliacao": 5
-  },
-  {
-    "titulo": "Programa de Saúde",
-    "autor": "José Luiz Vasconcellos e Fernando Gewandszznajder",
-    "genero": "Informativo",
-    "ano": 1992,
-    "avaliacao": 5,
-    "id": 1
-  }
 ]
