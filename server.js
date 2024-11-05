@@ -41,6 +41,27 @@ app.get('/livros', (req, res) => {
   res.json(livros);
 });
 
+app.put('/livros/:id', (req, res) => {
+  const livroId = req.params.id; // Obtém o ID do livro a ser atualizado a partir da URL
+  const livroAtualizado = req.body; // Dados atualizados do livro
+
+  // Encontra o índice do livro com o ID especificado
+  const index = livros.findIndex(livro => livro.id == livroId);
+
+  if (index !== -1) {
+    // Atualiza o livro no array com os novos dados
+    livros[index] = { ...livros[index], ...livroAtualizado };
+
+    salvarLivros(); // Salva o catálogo atualizado no arquivo
+
+    res.status(200).json({ message: 'Livro atualizado com sucesso!' });
+  } else {
+    // Caso o livro com o ID especificado não seja encontrado
+    res.status(404).json({ message: 'Livro não encontrado!' });
+  }
+});
+
+
 // Rota para adicionar um novo livro
 app.post('/livros', (req, res) => {
   const novoLivro = req.body;

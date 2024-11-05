@@ -1,65 +1,59 @@
 const catalogoLivros = [];
 
-  async function carregarCatalogo() {
-    try {
-      const response = await fetch('http://localhost:3000/livros');
-      const livros = await response.json();
-      catalogoLivros.push(...livros);
-      listarLivros();
-    } catch (error) {
-      console.error('Erro ao carregar o catálogo:', error);
-    }
+async function carregarCatalogo() {
+  try {
+    const response = await fetch('http://localhost:3000/livros');
+    const livros = await response.json();
+    catalogoLivros.push(...livros);
+  } catch (error) {
+    console.error('Erro ao carregar o catálogo:', error);
+  }
+}
+
+document.querySelector('#livroForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const titulo = document.querySelector('#livroTitulo').value;
+  const autor = document.querySelector('#livroAutor').value;
+  const genero = document.querySelector('#livroGenero').value;
+  const ano = document.querySelector('#livroAno').value;
+  const avaliacao = document.querySelector('#livroAvaliacao').value;
+
+  const livro = { titulo, autor, genero, ano, avaliacao };
+
+  const livroExistente = catalogoLivros.some(item => item.titulo === livro.titulo && item.autor === livro.autor);
+
+  if (livroExistente) {
+    alert('O livro já está no catálogo!');
+    return;
   }
 
-  document.querySelector('#livroForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+  catalogoLivros.push(livro);
 
-    const titulo = document.querySelector('#livroTitulo').value;
-    const autor = document.querySelector('#livroAutor').value;
-    const genero = document.querySelector('#livroGenero').value;
-    const ano = document.querySelector('#livroAno').value;
-    const avaliacao = document.querySelector('#livroAvaliacao').value;
+  try {
+    const response = await fetch('http://localhost:3000/livros', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(livro),
+    });
 
-    const livro = { titulo, autor, genero, ano, avaliacao };
-
-    // Verifica se o livro já está no catálogo
-
-    const livroExistente = catalogoLivros.some(item => item.titulo === livro.titulo && item.autor === livro.autor);
-
-    if (livroExistente) {
-        alert('O livro já está no catálogo!');
-        return;
+    if (response.ok) {
+      alert('Livro adicionado com sucesso!');
     }
+  } catch (error) {
+    console.error('Erro ao salvar o livro:', error);
+  }
 
-    
-    catalogoLivros.push(livro);
+  document.querySelector('#livroForm').reset();
+});
 
-    try {
-      const response = await fetch('http://localhost:3000/livros', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(livro),
-      });
+function listarLivros(filtro = '') {
+  const catalogoList = document.querySelector('#catalogoList');
+  catalogoList.innerHTML = '';
 
-      if (response.ok) {
-        alert('Livro adicionado com sucesso!');
-      }
-    } catch (error) {
-      console.error('Erro ao salvar o livro:', error);
-    }
-
-    document.querySelector('#livroForm').reset();
-    
-  });
-
-  function listarLivros(filtro = '') {
-    const catalogoList = document.querySelector('#catalogoList');
-    catalogoList.innerHTML = ''; // Limpa a lista antes de atualizar
-
-    // Percorre o array de livros e exibe cada um
-    catalogoLivros
+  catalogoLivros
     .filter(livro => livro.titulo.toLowerCase().includes(filtro.toLowerCase()))
     .forEach((livro, index) => {
       const listItem = document.createElement('li');
@@ -70,7 +64,6 @@ const catalogoLivros = [];
         <span class="ano">${livro.ano}</span>
         <span class="avaliacao">Avaliação: ${livro.avaliacao}</span>
         <div>
-          <!--<button class="edit">Editar Livro</button>--> 
           <select class="tarefa">
             <option value="status">Editar Campo</option>
             <option value="titulo">Título</option>
@@ -79,23 +72,13 @@ const catalogoLivros = [];
             <option value="ano">Ano</option>
             <option value="avaliacao">Avaliação</option>
           </select>      
+          <button class="save">Salvar Alterações</button>
           <button class="delete">Excluir Livro</button>
         </div>
       `;
-      
-      // Função de edição
-      /*listItem.querySelector('.edit').addEventListener('click', function() {
-        const spans = listItem.querySelectorAll('span');
-        spans.forEach(span => {
-          const currentText = span.innerText;
-          const livroText = prompt(`Edite ${span.className}:`, currentText);
-          if (livroText !== null) {
-            span.innerText = livroText.toUpperCase();
-          }
-        });
-      });*/
 
-      // Alteração de campos específicos e cores
+      let livroModificado = { ...livro }; // clone para editar sem afetar diretamente o catálogo
+
       listItem.querySelector('.tarefa').addEventListener('change', function() {
         const selectedStatus = this.value;
         let targetSpan;
@@ -122,47 +105,56 @@ const catalogoLivros = [];
           const newText = prompt(`Edite ${selectedStatus}:`, targetSpan.innerText);
           if (newText !== null) {
             targetSpan.innerText = (selectedStatus === "avaliacao" ? `Avaliação: ${newText}` : newText.toUpperCase());
-            targetSpan.style.color = selectedStatus === "autor" ? "orange" : 
-                                      selectedStatus === "genero" ? "green" : 
-                                      selectedStatus === "ano" ? "black" : 
-                                      selectedStatus === "avaliacao" ? "purple" : "blue";
+            livroModificado[selectedStatus] = newText;
           }
         }
       });
 
-      // Exclusão de tarefa
+      // Adicionando evento para salvar as alterações
+      listItem.querySelector('.save').addEventListener('click', async function() {
+        try {
+          const response = await fetch(`http://localhost:3000/livros/${livro.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(livroModificado),
+          });
+
+          if (response.ok) {
+            alert("Alterações salvas com sucesso!");
+            // Atualize o catalogoLivros com o novo livro modificado
+            catalogoLivros[index] = { ...livroModificado };
+            listarLivros(filtro); // Atualiza a lista para refletir as mudanças
+          } else {
+            console.error("Erro ao salvar as alterações");
+          }
+        } catch (error) {
+          console.error("Erro ao salvar o livro:", error);
+        }
+      });
+
       listItem.querySelector('.delete').addEventListener('click', function() {
         const confirmDelete = confirm("Tem certeza de que deseja excluir este livro?");
         if (confirmDelete) {
-          catalogoLivros.splice(index, 1); // Remove do array
-          listarLivros(); // Atualiza a lista exibida
+          catalogoLivros.splice(index, 1);
+          listarLivros();
           alert("Livro excluído com sucesso!");
         }
       });
 
       catalogoList.appendChild(listItem);
     });
-    console.log('Livros exibidos:', catalogoLivros.length);
-  }
+}
 
 
-  document.querySelector('#exibirLivrosBtn').addEventListener('click', () => {
-    console.log('Exibir Livros clicado');
-    listarLivros();
-  });
-  
-  document.querySelector('#exibirLivrosBtn').addEventListener('click', () => {
-    console.log('Exibir Livros clicado');
-    listarLivros();
-  });
-  
-  document.querySelector('#buscarLivrosBtn').addEventListener('click', () => {
-    console.log('Buscar Livros clicado');
-    const filtro = document.querySelector('#buscaInput').value;
-    listarLivros(filtro);
-  });
-  
-  
+document.querySelector('#exibirLivrosBtn').addEventListener('click', () => {
+  listarLivros();
+});
 
-  // Carrega o catálogo ao iniciar
-  carregarCatalogo();
+document.querySelector('#buscarLivrosBtn').addEventListener('click', () => {
+  const filtro = document.querySelector('#buscaInput').value;
+  listarLivros(filtro);
+});
+
+carregarCatalogo();

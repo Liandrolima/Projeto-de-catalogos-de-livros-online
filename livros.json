@@ -1,3 +1,9 @@
 [
-  
+  {
+    "titulo": "marcos",
+    "autor": "marcos",
+    "genero": "drama",
+    "ano": "1990",
+    "avaliacao": "5"
+  }
 ]
