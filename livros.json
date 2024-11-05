@@ -1,5 +1,13 @@
 [
   {
+    "titulo": "A BÍBLIA",
+    "autor": "DEUS",
+    "genero": "RELIGIOSO",
+    "ano": 400,
+    "avaliacao": 5,
+    "id": 1
+  },
+  {
     "titulo": "marcos",
     "autor": "marcos",
     "genero": "drama",

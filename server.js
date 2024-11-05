@@ -17,12 +17,18 @@ const livrosFilePath = path.join(__dirname, 'livros.json');
 // Função para carregar o catálogo do arquivo JSON
 const carregarLivros = () => {
   try {
-    const data = fs.readFileSync(livrosFilePath, 'utf8');
-    livros = JSON.parse(data) || [];
+    if (fs.existsSync(livrosFilePath)) {
+      const data = fs.readFileSync(livrosFilePath, 'utf8');
+      livros = JSON.parse(data) || [];
+    } else {
+      fs.writeFileSync(livrosFilePath, JSON.stringify([]));
+      livros = [];
+    }
   } catch (error) {
     console.error('Erro ao carregar o arquivo:', error);
   }
 };
+
 
 // Função para salvar o catálogo no arquivo JSON
 const salvarLivros = () => {

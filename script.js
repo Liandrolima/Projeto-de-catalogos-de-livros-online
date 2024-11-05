@@ -64,7 +64,7 @@ function listarLivros(filtro = '') {
         <span class="ano">${livro.ano}</span>
         <span class="avaliacao">Avaliação: ${livro.avaliacao}</span>
         <div>
-          <select class="tarefa">
+          <select class="campoEdicao">
             <option value="status">Editar Campo</option>
             <option value="titulo">Título</option>
             <option value="autor">Autor</option>
@@ -77,40 +77,22 @@ function listarLivros(filtro = '') {
         </div>
       `;
 
-      let livroModificado = { ...livro }; // clone para editar sem afetar diretamente o catálogo
+      // Evento para editar o campo selecionado
+      const livroModificado = { ...livro }; // Clonar livro para edição
+      listItem.querySelector('.campoEdicao').addEventListener('change', function() {
+        const campo = this.value;
+        const spanSelecionado = listItem.querySelector(`.${campo}`);
 
-      listItem.querySelector('.tarefa').addEventListener('change', function() {
-        const selectedStatus = this.value;
-        let targetSpan;
-
-        switch (selectedStatus) {
-          case "titulo":
-            targetSpan = listItem.querySelector('.titulo');
-            break;
-          case "autor":
-            targetSpan = listItem.querySelector('.autor');
-            break;
-          case "genero":
-            targetSpan = listItem.querySelector('.genero');
-            break;
-          case "ano":
-            targetSpan = listItem.querySelector('.ano');
-            break;
-          case "avaliacao":
-            targetSpan = listItem.querySelector('.avaliacao');
-            break;
-        }
-
-        if (targetSpan) {
-          const newText = prompt(`Edite ${selectedStatus}:`, targetSpan.innerText);
-          if (newText !== null) {
-            targetSpan.innerText = (selectedStatus === "avaliacao" ? `Avaliação: ${newText}` : newText.toUpperCase());
-            livroModificado[selectedStatus] = newText;
+        if (spanSelecionado) {
+          const novoValor = prompt(`Edite ${campo}:`, campo === "avaliacao" ? spanSelecionado.innerText.replace("Avaliação: ", "") : spanSelecionado.innerText);
+          if (novoValor !== null) {
+            spanSelecionado.innerText = campo === "avaliacao" ? `Avaliação: ${novoValor}` : novoValor.toUpperCase();
+            livroModificado[campo] = novoValor; // Atualizar valor no clone
           }
         }
       });
 
-      // Adicionando evento para salvar as alterações
+      // Evento para salvar alterações no servidor
       listItem.querySelector('.save').addEventListener('click', async function() {
         try {
           const response = await fetch(`http://localhost:3000/livros/${livro.id}`, {
@@ -123,7 +105,6 @@ function listarLivros(filtro = '') {
 
           if (response.ok) {
             alert("Alterações salvas com sucesso!");
-            // Atualize o catalogoLivros com o novo livro modificado
             catalogoLivros[index] = { ...livroModificado };
             listarLivros(filtro); // Atualiza a lista para refletir as mudanças
           } else {
@@ -134,19 +115,31 @@ function listarLivros(filtro = '') {
         }
       });
 
-      listItem.querySelector('.delete').addEventListener('click', function() {
+      // Evento para excluir o livro
+      listItem.querySelector('.delete').addEventListener('click', async function() {
         const confirmDelete = confirm("Tem certeza de que deseja excluir este livro?");
         if (confirmDelete) {
-          catalogoLivros.splice(index, 1);
-          listarLivros();
-          alert("Livro excluído com sucesso!");
+          try {
+            const response = await fetch(`http://localhost:3000/livros/${livro.id}`, {
+              method: 'DELETE',
+            });
+
+            if (response.ok) {
+              catalogoLivros.splice(index, 1);
+              listarLivros();
+              alert("Livro excluído com sucesso!");
+            } else {
+              console.error("Erro ao excluir o livro");
+            }
+          } catch (error) {
+            console.error("Erro ao excluir o livro:", error);
+          }
         }
       });
 
       catalogoList.appendChild(listItem);
     });
 }
-
 
 document.querySelector('#exibirLivrosBtn').addEventListener('click', () => {
   listarLivros();
