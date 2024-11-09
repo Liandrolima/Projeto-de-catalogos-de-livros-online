@@ -24,14 +24,19 @@ document.querySelector('#livroForm').addEventListener('submit', async function(e
   const livroExistente = catalogoLivros.some(item => item.titulo === livro.titulo && item.autor === livro.autor);
 
   if (livroExistente) {
-    alert('O livro já está no catálogo!');
+    document.getElementById('mensagem').innerHTML = 'O livro já está no catálogo!!';
+    setTimeout(() => {
+        document.getElementById('mensagem').innerHTML = '';
+    }, 3000); // Limpa a mensagem após 3 segundos
+
     document.querySelector('#livroTitulo').value = '';
     document.querySelector('#livroAutor').value = '';
     document.querySelector('#livroGenero').value = '';
     document.querySelector('#livroAno').value = '';
     document.querySelector('#livroAvaliacao').value = '';
     return;
-  }
+}
+
 
   catalogoLivros.push(livro);
 
