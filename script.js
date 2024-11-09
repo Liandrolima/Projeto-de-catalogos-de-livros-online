@@ -25,6 +25,11 @@ document.querySelector('#livroForm').addEventListener('submit', async function(e
 
   if (livroExistente) {
     alert('O livro já está no catálogo!');
+    document.querySelector('#livroTitulo').value = '';
+    document.querySelector('#livroAutor').value = '';
+    document.querySelector('#livroGenero').value = '';
+    document.querySelector('#livroAno').value = '';
+    document.querySelector('#livroAvaliacao').value = '';
     return;
   }
 
@@ -57,42 +62,67 @@ function listarLivros(filtro = '') {
     .filter(livro => livro.titulo.toLowerCase().includes(filtro.toLowerCase()))
     .forEach((livro, index) => {
       const listItem = document.createElement('li');
-      listItem.innerHTML = `
-        <span class="titulo">${livro.titulo.toUpperCase()}</span>
-        <span class="autor">${livro.autor.toUpperCase()}</span>
-        <span class="genero">${livro.genero.toUpperCase()}</span>
-        <span class="ano">${livro.ano}</span>
-        <span class="avaliacao">Avaliação: ${livro.avaliacao}</span>
-        <div>
-          <select class="campoEdicao">
-            <option value="status">Editar Campo</option>
-            <option value="titulo">Título</option>
-            <option value="autor">Autor</option>
-            <option value="genero">Gênero</option>
-            <option value="ano">Ano</option>
-            <option value="avaliacao">Avaliação</option>
-          </select>      
-          <button class="save">Salvar Alterações</button>
-          <button class="delete">Excluir Livro</button>
-        </div>
+      listItem.innerHTML = ` 
+        <li class="livro-item">
+          <div class="livro-info">
+            <span class="titulo"><strong>TÍTULO:</strong> <em>${livro.titulo}</em></span>
+            <span class="autor"><STRONG>AUTOR:</STRONG> <em>${livro.autor}</em></span>
+            <span class="genero"><STRONG>GÊNERO:</STRONG> <em>${livro.genero}</em></span>
+            <span class="ano"><STRONG>ANO:</STRONG> <em>${livro.ano}</em></span>
+            <span class="avaliacao"><STRONG>AVALIAÇÃO:</STRONG> <em>${livro.avaliacao}</em></span>
+          </div>
+
+          <div class="livro-actions">
+            <select class="tarefa">
+              <option value="status">Editar Livro</option>
+              <option value="titulo">Título</option>
+              <option value="autor">Autor</option>
+              <option value="genero">Gênero</option>
+              <option value="ano">Ano</option>
+              <option value="avaliacao">Avaliação</option>
+            </select>
+            
+            <button class="save">Salvar Alterações</button>
+            <button class="delete">Excluir Livro</button>
+            </div>
+          </li>
+
       `;
 
-      // Evento para editar o campo selecionado
-      const livroModificado = { ...livro }; // Clonar livro para edição
-      listItem.querySelector('.campoEdicao').addEventListener('change', function() {
-        const campo = this.value;
-        const spanSelecionado = listItem.querySelector(`.${campo}`);
+      let livroModificado = { ...livro }; // clone para editar sem afetar diretamente o catálogo
 
-        if (spanSelecionado) {
-          const novoValor = prompt(`Edite ${campo}:`, campo === "avaliacao" ? spanSelecionado.innerText.replace("Avaliação: ", "") : spanSelecionado.innerText);
-          if (novoValor !== null) {
-            spanSelecionado.innerText = campo === "avaliacao" ? `Avaliação: ${novoValor}` : novoValor.toUpperCase();
-            livroModificado[campo] = novoValor; // Atualizar valor no clone
+      listItem.querySelector('.tarefa').addEventListener('change', function() {
+        const selectedStatus = this.value;
+        let targetSpan;
+
+        switch (selectedStatus) {
+          case "titulo":
+            targetSpan = listItem.querySelector('.titulo');
+            break;
+          case "autor":
+            targetSpan = listItem.querySelector('.autor');
+            break;
+          case "genero":
+            targetSpan = listItem.querySelector('.genero');
+            break;
+          case "ano":
+            targetSpan = listItem.querySelector('.ano');
+            break;
+          case "avaliacao":
+            targetSpan = listItem.querySelector('.avaliacao');
+            break;
+        }
+
+        if (targetSpan) {
+          const newText = prompt(`Edite ${selectedStatus}:`, targetSpan.innerText);
+          if (newText !== null) {
+            targetSpan.innerText = (selectedStatus === "avaliacao" ? `Avaliação: ${newText}` : newText.toUpperCase());
+            livroModificado[selectedStatus] = newText;
           }
         }
       });
 
-      // Evento para salvar alterações no servidor
+      // Adicionando evento para salvar as alterações
       listItem.querySelector('.save').addEventListener('click', async function() {
         try {
           const response = await fetch(`http://localhost:3000/livros/${livro.id}`, {
@@ -105,6 +135,7 @@ function listarLivros(filtro = '') {
 
           if (response.ok) {
             alert("Alterações salvas com sucesso!");
+            // Atualize o catalogoLivros com o novo livro modificado
             catalogoLivros[index] = { ...livroModificado };
             listarLivros(filtro); // Atualiza a lista para refletir as mudanças
           } else {
@@ -115,7 +146,7 @@ function listarLivros(filtro = '') {
         }
       });
 
-      // Evento para excluir o livro
+      // Evento para excluir livro
       listItem.querySelector('.delete').addEventListener('click', async function() {
         const confirmDelete = confirm("Tem certeza de que deseja excluir este livro?");
         if (confirmDelete) {
@@ -125,14 +156,15 @@ function listarLivros(filtro = '') {
             });
 
             if (response.ok) {
-              catalogoLivros.splice(index, 1);
-              listarLivros();
               alert("Livro excluído com sucesso!");
+              catalogoLivros.splice(index, 1); // Remove o livro do frontend
+              listarLivros(filtro); // Atualiza a lista para refletir a exclusão
             } else {
-              console.error("Erro ao excluir o livro");
+              const errorMsg = await response.text();
+              console.error("Erro ao excluir o livro:", errorMsg);
             }
           } catch (error) {
-            console.error("Erro ao excluir o livro:", error);
+            console.error('Erro ao excluir o livro:', error);
           }
         }
       });

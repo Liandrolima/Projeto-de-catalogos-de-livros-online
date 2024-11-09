@@ -13,6 +13,7 @@ let livros = [];
 
 // Caminho para o arquivo JSON
 const livrosFilePath = path.join(__dirname, 'livros.json');
+console.log('Caminho do arquivo:', livrosFilePath);
 
 // Função para carregar o catálogo do arquivo JSON
 const carregarLivros = () => {
@@ -21,23 +22,26 @@ const carregarLivros = () => {
       const data = fs.readFileSync(livrosFilePath, 'utf8');
       livros = JSON.parse(data) || [];
     } else {
-      fs.writeFileSync(livrosFilePath, JSON.stringify([]));
+      fs.writeFileSync(livrosFilePath, JSON.stringify([]), 'utf8');
       livros = [];
     }
+    console.log('Livros carregados:', livros); // Verifique se os livros estão sendo carregados corretamente
   } catch (error) {
     console.error('Erro ao carregar o arquivo:', error);
   }
 };
 
-
 // Função para salvar o catálogo no arquivo JSON
 const salvarLivros = () => {
   try {
+    console.log('Salvando alterações no arquivo...');
     fs.writeFileSync(livrosFilePath, JSON.stringify(livros, null, 2), 'utf8');
+    console.log('Arquivo atualizado com sucesso!');
   } catch (error) {
     console.error('Erro ao salvar no arquivo:', error);
   }
 };
+
 
 // Carrega os livros ao iniciar o servidor
 carregarLivros();
@@ -47,34 +51,55 @@ app.get('/livros', (req, res) => {
   res.json(livros);
 });
 
-app.put('/livros/:id', (req, res) => {
-  const livroId = req.params.id; // Obtém o ID do livro a ser atualizado a partir da URL
-  const livroAtualizado = req.body; // Dados atualizados do livro
+// Rota para adicionar um novo livro
+app.post('/livros', (req, res) => {
+  const novoLivro = req.body;
 
-  // Encontra o índice do livro com o ID especificado
-  const index = livros.findIndex(livro => livro.id == livroId);
+  // Adiciona um ID único ao novo livro
+  novoLivro.id = livros.length > 0 ? Math.max(...livros.map(livro => livro.id)) + 1 : 1;
+
+  livros.push(novoLivro);
+  salvarLivros(); // Salva o catálogo no arquivo
+  res.status(201).json({ message: 'Livro adicionado com sucesso!' });
+});
+
+// Rota para atualizar um livro existente
+app.put('/livros/:id', (req, res) => {
+  const livroId = parseInt(req.params.id, 10);
+  const livroAtualizado = req.body;
+
+  const index = livros.findIndex(livro => livro.id === livroId);
 
   if (index !== -1) {
-    // Atualiza o livro no array com os novos dados
     livros[index] = { ...livros[index], ...livroAtualizado };
-
     salvarLivros(); // Salva o catálogo atualizado no arquivo
-
     res.status(200).json({ message: 'Livro atualizado com sucesso!' });
   } else {
-    // Caso o livro com o ID especificado não seja encontrado
+    res.status(404).json({ message: 'Livro não encontrado!' });
+  }
+});
+
+// Rota para excluir um livro
+app.delete('/livros/:id', (req, res) => {
+  const livroId = parseInt(req.params.id, 10);
+  console.log('ID recebido para exclusão:', livroId);
+
+  const index = livros.findIndex(livro => livro.id === livroId);
+
+  if (index !== -1) {
+    console.log('Livro antes da exclusão:', livros);
+    livros.splice(index, 1);
+    console.log('Livro depois da exclusão:', livros);
+    salvarLivros(); // Salva o array atualizado no arquivo livros.json
+    res.status(200).json({ message: 'Livro deletado com sucesso!' });
+  } else {
+    console.log('Livro não encontrado!');
     res.status(404).json({ message: 'Livro não encontrado!' });
   }
 });
 
 
-// Rota para adicionar um novo livro
-app.post('/livros', (req, res) => {
-  const novoLivro = req.body;
-  livros.push(novoLivro);
-  salvarLivros(); // Salva o catálogo no arquivo
-  res.status(201).json({ message: 'Livro adicionado com sucesso!' });
-});
+
 
 // Iniciar o servidor
 app.listen(PORT, () => {

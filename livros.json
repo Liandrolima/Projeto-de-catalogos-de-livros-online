@@ -1,17 +1,10 @@
 [
   {
-    "titulo": "A BÍBLIA",
-    "autor": "DEUS",
-    "genero": "RELIGIOSO",
-    "ano": 400,
-    "avaliacao": 5,
+    "titulo": "Evangélio de Jesus Cristo Segundo Escreveu São Marcos",
+    "autor": "Marcos",
+    "genero": "Religioso",
+    "ano": "40",
+    "avaliacao": "5",
     "id": 1
-  },
-  {
-    "titulo": "marcos",
-    "autor": "marcos",
-    "genero": "drama",
-    "ano": "1990",
-    "avaliacao": "5"
   }
 ]

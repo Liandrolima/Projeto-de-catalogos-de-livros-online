@@ -1,0 +1,54 @@
+.livro-item {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .livro-info {
+    margin-bottom: 10px;
+  }
+  
+  .livro-info span {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .livro-info span strong {
+    color: #000;
+  }
+  
+  .livro-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .livro-actions button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+  }
+  
+  .livro-actions button:hover {
+    background-color: #45a049;
+  }
+  
+  .livro-actions select {
+    padding: 5px;
+    font-size: 14px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+  }
+  
