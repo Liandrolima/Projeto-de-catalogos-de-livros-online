@@ -8,39 +8,48 @@
   
 </head>
 <body>
-  <h1>Catálogo de Livros</h1>
-  <h2>Adicionar Livros</h2>
-  <!-- Formulário para adicionar livro -->
-  <form id="livroForm">
-    <label for="livroTitulo">Título:</label>
-    <input type="text" id="livroTitulo" required><br>
-
-    <label for="livroAutor">Autor:</label>
-    <input type="text" id="livroAutor" required><br>
-
-    <label for="livroGenero">Gênero:</label>
-    <input type="text" id="livroGenero" required><br>
-
-    <label for="livroAno">Ano:</label>
-    <input type="number" id="livroAno" required><br>
-
-    <label for="livroAvaliacao">Avaliação (1 a 5):</label>
-    <input type="number" id="livroAvaliacao" min="1" max="5" required><br>
-
-    <button type="submit">Adicionar</button><br><br>
-    <div id="mensagem"></div>
-
-  </form>
-
+  <header>
+    <h1>Catálogo de Livros</h1>
+  </header>
+  
+   <!-- Formulário para adicionar livro -->
+   <form id="livroForm">
+    <nav>
+      <h2>Adicionar Livros</h2>
+      <label for="livroTitulo">Título:</label>
+      <input type="text" id="livroTitulo" required>
+  
+      <label for="livroAutor">Autor:</label>
+      <input type="text" id="livroAutor" required>
+  
+      <label for="livroGenero">Gênero:</label>
+      <input type="text" id="livroGenero" required>
+  
+      <label for="livroAno">Ano:</label>
+      <input type="number" id="livroAno" required>
+  
+      <label for="livroAvaliacao">Avaliação:</label>    
+      <select id="livroAvaliacao">
+        <option value="status">Editar Campo</option>
+        <option value="EXCELENTE">EXCELENTE</option>
+        <option value="ÓTIMO">ÓTIMO</option>
+        <option value="BOM">BOM</option>
+        <option value="RUIM">RUIM</option>
+      </select>  
+      <button type="submit">Confirmar</button>
+      <div id="mensagem"></div>
+    </nav>    
+  </form> 
+<div>
   <h2>Buscar Livro:</h2>
   <input type="text" id="buscaInput" placeholder="Digite o título, autor ou gênero">
   <button id="buscarLivrosBtn">Buscar</button>
   <button id="exibirLivrosBtn">Exibir Todos os Livros</button>
+</div>
   
-  <h2>Livros no Catálogo:</h2>
-  <ul id="catalogoList"></ul>
-
+<h2>Livros no Catálogo:</h2>
+<ul id="catalogoList"></ul>
   
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -68,29 +68,29 @@ function listarLivros(filtro = '') {
     .forEach((livro, index) => {
       const listItem = document.createElement('li');
       listItem.innerHTML = ` 
-        <li class="livro-item">
-          <div class="livro-info">
-            <span class="titulo"><strong>TÍTULO:</strong> <em>${livro.titulo}</em></span>
-            <span class="autor"><STRONG>AUTOR:</STRONG> <em>${livro.autor}</em></span>
-            <span class="genero"><STRONG>GÊNERO:</STRONG> <em>${livro.genero}</em></span>
-            <span class="ano"><STRONG>ANO:</STRONG> <em>${livro.ano}</em></span>
-            <span class="avaliacao"><STRONG>AVALIAÇÃO:</STRONG> <em>${livro.avaliacao}</em></span>
-          </div>
+       <li class="livro-item">
+        <div class="livro-info">
+          <span class="titulo"><STRONG>TÍTULO:</STRONG> <em>${livro.titulo}</em></span>
+          <span class="autor"><strong>AUTOR:</strong> <em>${livro.autor}</em></span>
+          <span class="genero"><strong>GÊNERO:</strong> <em>${livro.genero}</em></span>
+          <span class="ano"><strong>ANO:</strong> <em>${livro.ano}</em></span>
+          <span class="avaliacao"><strong>AVALIAÇÃO:</strong> <em>${livro.avaliacao}</em></span>
+        </div>
 
-          <div class="livro-actions">
-            <select class="tarefa">
-              <option value="status">Editar Livro</option>
-              <option value="titulo">Título</option>
-              <option value="autor">Autor</option>
-              <option value="genero">Gênero</option>
-              <option value="ano">Ano</option>
-              <option value="avaliacao">Avaliação</option>
-            </select>
-            
-            <button class="save">Salvar Alterações</button>
-            <button class="delete">Excluir Livro</button>
-            </div>
-          </li>
+        <div class="livro-actions">
+          <select class="tarefa">
+            <option value="status">Editar Campo</option>
+            <option value="titulo">Título</option>
+            <option value="autor">Autor</option>
+            <option value="genero">Gênero</option>
+            <option value="ano">Ano</option>
+            <option value="avaliacao">Avaliação</option>
+          </select>
+          
+          <button class="save">Salvar Alterações</button>
+          <button class="delete">Excluir Livro</button>
+        </div>
+      </li>
 
       `;
 
@@ -98,49 +98,90 @@ function listarLivros(filtro = '') {
 
       listItem.querySelector('.tarefa').addEventListener('change', function() {
         const selectedStatus = this.value;
-        let targetSpan;
-
+        let targetValue;
+      
+        // Seleciona o valor correspondente do livro
         switch (selectedStatus) {
-          case "titulo":
-            targetSpan = listItem.querySelector('.titulo');
+          case 'titulo':
+            targetValue = livro.titulo;
             break;
-          case "autor":
-            targetSpan = listItem.querySelector('.autor');
+          case 'autor':
+            targetValue = livro.autor;
             break;
-          case "genero":
-            targetSpan = listItem.querySelector('.genero');
+          case 'genero':
+            targetValue = livro.genero;
             break;
-          case "ano":
-            targetSpan = listItem.querySelector('.ano');
+          case 'ano':
+            targetValue = livro.ano;
             break;
-          case "avaliacao":
-            targetSpan = listItem.querySelector('.avaliacao');
+          case 'avaliacao':
+            targetValue = livro.avaliacao;
             break;
+          default:
+            return; // Caso nenhum valor válido seja selecionado
         }
+      
+        // Solicita ao usuário para editar o valor correspondente
+        //const newText = prompt(`Edite ${selectedStatus}:`, targetValue);
 
-        if (targetSpan) {
-          const newText = prompt(`Edite ${selectedStatus}:`, targetSpan.innerText);
-          if (newText !== null) {
-            targetSpan.innerText = (selectedStatus === "avaliacao" ? `Avaliação: ${newText}` : newText.toUpperCase());
-            livroModificado[selectedStatus] = newText;
+        let newText;
+        if (selectedStatus === 'avaliacao') {
+          // Cria um elemento de select com opções de avaliação
+          newText = prompt(`Para Avaliar o livro escolha: RUIM, BOM, ÓTIMO, EXCELENTE`, targetValue);
+          
+          // Aqui você pode garantir que o valor seja uma das opções válidas
+          if (!['RUIM', 'BOM', 'ÓTIMO', 'EXCELENTE'].includes(newText)) {
+            alert('Avaliação inválida. Por favor, escolha entre: RUIM, BOM, ÓTIMO, EXCELENTE');
+            newText = prompt(`Para Avaliar o livro escolha: RUIM, BOM, ÓTIMO, EXCELENTE`, targetValue);
+            
+          }
+        } else {
+          // Para os outros campos, usa-se o prompt padrão
+          newText = prompt(`Edite ${selectedStatus}:`, targetValue);
+          // Converte a entrada para maiúsculas
+          newText = newText ? newText.toUpperCase() : '';
+        }
+      
+        // Atualiza o valor do livro com o que foi editado
+        if (newText !== null && newText !== '') {
+          switch (selectedStatus) {
+            case 'titulo':
+              livro.titulo = newText;
+              break;
+            case 'autor':
+              livro.autor = newText;
+              break;
+            case 'genero':
+              livro.genero = newText;
+              break;
+            case 'ano':
+              livro.ano = newText;
+              break;
+            case 'avaliacao':
+              livro.avaliacao = newText.toUpperCase();
+              break;
+              
           }
         }
       });
-
+      
       // Adicionando evento para salvar as alterações
       listItem.querySelector('.save').addEventListener('click', async function() {
         try {
+          // Clona o livro para evitar alterações diretamente no objeto original
+          const livroModificado = { ...livro }; 
+      
           const response = await fetch(`http://localhost:3000/livros/${livro.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(livroModificado),
+            body: JSON.stringify(livroModificado), // Envia o livro modificado
           });
-
+      
           if (response.ok) {
             alert("Alterações salvas com sucesso!");
-            // Atualize o catalogoLivros com o novo livro modificado
+            // Atualiza o catálogo com o livro modificado
             catalogoLivros[index] = { ...livroModificado };
             listarLivros(filtro); // Atualiza a lista para refletir as mudanças
           } else {
@@ -150,7 +191,7 @@ function listarLivros(filtro = '') {
           console.error("Erro ao salvar o livro:", error);
         }
       });
-
+      
       // Evento para excluir livro
       listItem.querySelector('.delete').addEventListener('click', async function() {
         const confirmDelete = confirm("Tem certeza de que deseja excluir este livro?");

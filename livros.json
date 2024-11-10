@@ -1,10 +1,10 @@
 [
   {
-    "titulo": "BÍBLIA",
-    "autor": "DEUS",
+    "titulo": "EVANGÉLIO DE LUCAS",
+    "autor": "MARCOS",
     "genero": "RELIGIOSO",
-    "ano": 400,
-    "avaliacao": 5,
+    "ano": "45",
+    "avaliacao": "status",
     "id": 1
   }
 ]
