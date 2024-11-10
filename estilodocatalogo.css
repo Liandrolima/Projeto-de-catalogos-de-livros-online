@@ -72,7 +72,8 @@ form > nav > button {
   align-self: self-end;
   border-radius: 10px;
   padding: 7px;
-  margin-top: 7px;
+  margin-bottom: 10px;
+  
   transition: all 0.5s ease;
 }
 
@@ -97,16 +98,25 @@ form > nav > button:hover {
   
 }
 
-div {
+#buscar {
   background-color: lightseagreen; 
   display: flex;
   flex-flow: column; /* flex-direction: column; + flex-wrap: nowrap; */
-  justify-content: flex-start; /* Alinha os elementos no início */
+  justify-content: space-around; /* Alinha os elementos no início */
   align-items: center; /* Centraliza os itens no eixo transversal */
-  width: 400px; 
+  height: 150px;
+  width: 400px;
   padding: 10px;
   border-radius: 10px;
-  
+  margin: auto; /* Centraliza horizontalmente */
+}
+
+#catalogo {
+  flex: auto;
+  text-shadow: 2px 2px 0px rgb(0, 0, 0, 0.404);
+  text-align: center;
+  padding: 10px;
+
 }
 
 .livro-item {

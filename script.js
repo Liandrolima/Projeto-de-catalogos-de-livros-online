@@ -68,6 +68,7 @@ function listarLivros(filtro = '') {
     .forEach((livro, index) => {
       const listItem = document.createElement('li');
       listItem.innerHTML = ` 
+      <h2 id="catalogo">Livros no Catálogo:</h2>
        <li class="livro-item">
         <div class="livro-info">
           <span class="titulo"><STRONG>TÍTULO:</STRONG> <em>${livro.titulo}</em></span>
