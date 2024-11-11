@@ -8,14 +8,15 @@
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 1em;    
-    height: 100vh;
+  background-image: url(imagemcatalogo/wallpaper001.jpg);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;    
+  height: 100vh;
     width: 100vw;
 }
 
 header {
-  background-color: gray;
+  background-color: #6B8E23; /* Verde oliva */
   color: white;
   padding: 10px;
   display: flex;
@@ -32,7 +33,6 @@ header > h1 {
 }
 
 form {
-  background-color: lightgreen;  
   display: flex;
   height: 300px;
   padding: 10px;
@@ -44,7 +44,8 @@ form {
 }
 
 nav {
-  background-color: lightseagreen; 
+  background-color: #800020;
+  color: #FFF; 
   display: flex;
   flex-flow: column; /* flex-direction: column; + flex-wrap: nowrap; */
   justify-content: flex-start; /* Alinha os elementos no início */
@@ -52,7 +53,14 @@ nav {
   width: 400px; 
   padding: 10px;
   border-radius: 10px;
+  overflow: hidden;  
+  animation: aparecerLentamente 5s ease-in-out forwards;
 }
+
+@keyframes aparecerLentamente {
+  0% { opacity: 0; }   /* Início totalmente transparente */
+  100% { opacity: 1; } /* Totalmente visível ao final */
+} 
 
 label {
   position: relative;
@@ -62,13 +70,15 @@ label {
 }
 
 nav > input {
-  background-color: lightgreen;
+  
   padding: 3px;
   border-radius: 10px;
 }
 
 
 form > nav > button {
+  background-color: #800020;
+  color: #FFF;
   align-self: self-end;
   border-radius: 10px;
   padding: 7px;
@@ -84,13 +94,14 @@ form > nav > select {
 }
 
 form > nav > button:hover {
+  background-color: #8B4513;
   border: 2px solid rgba(255, 255, 255, 0.637);
   transform: translate(-3px, -3px);
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.623);
 }
 
 #mensagem {
-  color: red;
+  color: white;
   font-family: Arial, Helvetica, sans-serif;
   margin: -5px;
   padding: 0px;
@@ -99,7 +110,8 @@ form > nav > button:hover {
 }
 
 #buscar {
-  background-color: lightseagreen; 
+  background-color: #800020; 
+  color: #FFF;
   display: flex;
   flex-flow: column; /* flex-direction: column; + flex-wrap: nowrap; */
   justify-content: space-around; /* Alinha os elementos no início */
@@ -109,6 +121,8 @@ form > nav > button:hover {
   padding: 10px;
   border-radius: 10px;
   margin: auto; /* Centraliza horizontalmente */
+  overflow: hidden;  
+  animation: aparecerLentamente 5s ease-in-out forwards;
 }
 
 #catalogo {
@@ -123,11 +137,27 @@ form > nav > button:hover {
     border: 1px solid #ccc;
     margin-bottom: 10px;
     padding: 15px;
+    width: 400px;
+    padding: 5px;
     border-radius: 8px;
     background-color: #f9f9f9;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    
+   
   }
+
+  
+  
+  /*flex-flow: column;  flex-direction: column; + flex-wrap: nowrap; */
+  /*justify-content: flex-start; /* Alinha os elementos no início */
+  /*align-items: center; /* Centraliza os itens no eixo transversal */
+  /*width: 400px; 
+  padding: 10px;
+  border-radius: 10px;
+  overflow: hidden;  
+  animation: aparecerLentamente 5s ease-in-out forwards;*/
   
   .livro-info {
     margin-bottom: 10px;
@@ -153,7 +183,7 @@ form > nav > button:hover {
   
   .livro-actions button {
     padding: 5px 10px;
-    background-color: #4CAF50;
+    background-color: #800020;
     color: white;
     border: none;
     border-radius: 5px;
@@ -163,13 +193,14 @@ form > nav > button:hover {
   }
   
   .livro-actions button:hover {
-    background-color: #45a049;
+    background-color: #8B4513;
   }
   
   .livro-actions select {
     padding: 5px;
     font-size: 14px;
-    background-color: #4CAF50;
+    background-color: #800020;
+    color: white;
     border: none;
     border-radius: 5px;
   }

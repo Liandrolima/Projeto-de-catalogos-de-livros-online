@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Livros</title>
+    <style>
+        /* Estilização básica */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .catalogo {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px;
+            background-color: lightseagreen;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="catalogo">
+        <h1>Catálogo de Livros</h1>
+        <ul>
+            <h2 id="catalogo">Livros no Catálogo:</h2>
+            <li class="livro-item">
+             <div class="livro-info">
+               <span class="titulo"><STRONG>TÍTULO:</STRONG> <em>${livro.titulo}</em></span>
+               <span class="autor"><strong>AUTOR:</strong> <em>${livro.autor}</em></span>
+               <span class="genero"><strong>GÊNERO:</strong> <em>${livro.genero}</em></span>
+               <span class="ano"><strong>ANO:</strong> <em>${livro.ano}</em></span>
+               <span class="avaliacao"><strong>AVALIAÇÃO:</strong> <em>${livro.avaliacao}</em></span>
+             </div>
+     
+             <div class="livro-actions">
+               <select class="tarefa">
+                 <option value="status">Editar Campo</option>
+                 <option value="titulo">Título</option>
+                 <option value="autor">Autor</option>
+                 <option value="genero">Gênero</option>
+                 <option value="ano">Ano</option>
+                 <option value="avaliacao">Avaliação</option>
+               </select>
+               
+               <button class="save">Salvar Alterações</button>
+               <button class="delete">Excluir Livro</button>
+             </div>
+           </li>
+      
+        </ul>
+    </div>
+    <p><a href="index.html" rel="prev">Voltar para a primeira página</a></p>
+</body>
+</html>

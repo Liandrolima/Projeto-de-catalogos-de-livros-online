@@ -6,6 +6,7 @@
   <title>Catálogos de livros online</title>
   <link rel="stylesheet" href="estilodocatalogo.css">
   
+  
 </head>
 <body>
   <header>
@@ -44,12 +45,12 @@
   <h2>Buscar Livro:</h2>
   <input type="text" id="buscaInput" placeholder="Digite o título, autor ou gênero">
   <button id="buscarLivrosBtn">Buscar</button>
-  <button id="exibirLivrosBtn">Exibir Todos os Livros</button>
+  <button id="exibirLivrosBtn" onclick="window.location.href='catalogo.html'">Exibir Todos os Livros</button>
 </div>
   
 
 <ul id="catalogoList"></ul>
-  
+<h2 id="catalogo">Livros no Catálogo</h2>  
 <script src="script.js"></script>
 </body>
 </html>
