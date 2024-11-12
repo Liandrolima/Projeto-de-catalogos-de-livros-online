@@ -4,6 +4,7 @@ async function carregarCatalogo() {
   try {
     const response = await fetch('http://localhost:3000/livros');
     const livros = await response.json();
+    console.log(livros);
     catalogoLivros.push(...livros);
   } catch (error) {
     console.error('Erro ao carregar o catálogo:', error);
@@ -20,6 +21,8 @@ document.querySelector('#livroForm').addEventListener('submit', async function(e
   const avaliacao = document.querySelector('#livroAvaliacao').value;
 
   const livro = { titulo, autor, genero, ano, avaliacao };
+
+  
 
   const livroExistente = catalogoLivros.some(item => item.titulo === livro.titulo && item.autor === livro.autor);
 
@@ -230,3 +233,5 @@ document.querySelector('#buscarLivrosBtn').addEventListener('click', () => {
 });
 
 carregarCatalogo();
+carregarCatalogo().then(() => listarLivros());
+
