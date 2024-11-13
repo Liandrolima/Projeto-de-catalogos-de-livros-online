@@ -233,5 +233,5 @@ document.querySelector('#buscarLivrosBtn').addEventListener('click', () => {
 });
 
 carregarCatalogo();
-carregarCatalogo().then(() => listarLivros());
+
 

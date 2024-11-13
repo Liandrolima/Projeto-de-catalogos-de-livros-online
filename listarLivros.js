@@ -9,7 +9,7 @@ async function listarLivros() {
     livros.forEach(livro => {
       const li = document.createElement('li');
       li.innerHTML = `
-        <h2 id="catalogo">Livros no Catálogo:</h2>
+       
         <div class="livro-item">
           <div class="livro-info">
             <span class="titulo"><strong>TÍTULO:</strong> <em>${livro.titulo}</em></span>
