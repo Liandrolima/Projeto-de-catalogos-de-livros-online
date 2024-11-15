@@ -62,91 +62,97 @@ document.querySelector('#livroForm').addEventListener('submit', async function(e
   document.querySelector('#livroForm').reset();
 });
 
-function listarLivros(filtro = '') {
+async function buscarLivro(filtro = '') {
   const catalogoList = document.querySelector('#catalogoList');
-  catalogoList.innerHTML = '';
+  catalogoList.innerHTML = '';  // Limpa a lista de livros
 
-  catalogoLivros
-    .filter(livro => livro.titulo.toLowerCase().includes(filtro.toLowerCase()))
-    .forEach((livro, index) => {
+  if (!filtro.trim()) {
+    catalogoList.innerHTML = '<p>Por favor, digite o nome do livro ou do autor para buscar.</p>';
+    return;
+  }
+
+  // Verifique se o catálogo foi carregado corretamente
+  if (catalogoLivros.length === 0) {
+    catalogoList.innerHTML = '<p>Não há livros carregados no catálogo.</p>';
+    return;
+  }
+
+  // Cria uma expressão regular que busca a palavra completa no filtro
+  const regex = new RegExp(`\\b${filtro.toLowerCase()}\\b`, 'i'); // 'i' para ignorar maiúsculas/minúsculas
+
+  // Filtra os livros com base no título ou autor
+  const livrosFiltrados = catalogoLivros.filter(livro => 
+    regex.test(livro.titulo.toLowerCase()) || 
+    regex.test(livro.autor.toLowerCase())
+  );
+
+  // Se houver livros filtrados, exibe-os
+  if (livrosFiltrados.length > 0) {
+    livrosFiltrados.forEach((livro, index) => {
       const listItem = document.createElement('li');
       listItem.innerHTML = ` 
-      <h2 id="catalogo">Livros no Catálogo:</h2>
-       <li class="livro-item">
-        <div class="livro-info">
-          <span class="titulo"><STRONG>TÍTULO:</STRONG> <em>${livro.titulo}</em></span>
-          <span class="autor"><strong>AUTOR:</strong> <em>${livro.autor}</em></span>
-          <span class="genero"><strong>GÊNERO:</strong> <em>${livro.genero}</em></span>
-          <span class="ano"><strong>ANO:</strong> <em>${livro.ano}</em></span>
-          <span class="avaliacao"><strong>AVALIAÇÃO:</strong> <em>${livro.avaliacao}</em></span>
-        </div>
+        <li class="livro-item">
+          <div class="livro-info">
+            <span class="titulo"><strong>TÍTULO:</strong> <em>${livro.titulo.toUpperCase()}</em></span>
+            <span class="autor"><strong>AUTOR:</strong> <em>${livro.autor.toUpperCase()}</em></span>
+            <span class="genero"><strong>GÊNERO:</strong> <em>${livro.genero.toUpperCase()}</em></span>
+            <span class="ano"><strong>ANO:</strong> <em>${livro.ano.toUpperCase()}</em></span>
+            <span class="avaliacao"><strong>AVALIAÇÃO:</strong> <em>${livro.avaliacao.toUpperCase()}</em></span>
+          </div>
 
-        <div class="livro-actions">
-          <select class="tarefa">
-            <option value="status">Editar Campo</option>
-            <option value="titulo">Título</option>
-            <option value="autor">Autor</option>
-            <option value="genero">Gênero</option>
-            <option value="ano">Ano</option>
-            <option value="avaliacao">Avaliação</option>
-          </select>
-          
-          <button class="save">Salvar Alterações</button>
-          <button class="delete">Excluir Livro</button>
-        </div>
-      </li>
-
+          <div class="livro-actions">
+            <select class="tarefa">
+              <option value="status">Editar Campo</option>
+              <option value="titulo">Título</option>
+              <option value="autor">Autor</option>
+              <option value="genero">Gênero</option>
+              <option value="ano">Ano</option>
+              <option value="avaliacao">Avaliação</option>
+            </select>
+            
+            <button class="save">Salvar Alterações</button>
+            <button class="delete">Excluir Livro</button>
+          </div>
+        </li>
       `;
 
-      let livroModificado = { ...livro }; // clone para editar sem afetar diretamente o catálogo
-
+      // Eventos para editar e salvar alterações do livro
       listItem.querySelector('.tarefa').addEventListener('change', function() {
         const selectedStatus = this.value;
         let targetValue;
       
-        // Seleciona o valor correspondente do livro
         switch (selectedStatus) {
           case 'titulo':
-            targetValue = livro.titulo;
+            targetValue = livro.titulo.toUpperCase();
             break;
           case 'autor':
-            targetValue = livro.autor;
+            targetValue = livro.autor.toUpperCase();
             break;
           case 'genero':
-            targetValue = livro.genero;
+            targetValue = livro.genero.toUpperCase();
             break;
           case 'ano':
-            targetValue = livro.ano;
+            targetValue = livro.ano.toUpperCase();
             break;
           case 'avaliacao':
-            targetValue = livro.avaliacao;
+            targetValue = livro.avaliacao.toUpperCase();
             break;
           default:
-            return; // Caso nenhum valor válido seja selecionado
+            return;
         }
-      
-        // Solicita ao usuário para editar o valor correspondente
-        //const newText = prompt(`Edite ${selectedStatus}:`, targetValue);
 
         let newText;
         if (selectedStatus === 'avaliacao') {
-          // Cria um elemento de select com opções de avaliação
           newText = prompt(`Para Avaliar o livro escolha: RUIM, BOM, ÓTIMO, EXCELENTE`, targetValue);
-          
-          // Aqui você pode garantir que o valor seja uma das opções válidas
           if (!['RUIM', 'BOM', 'ÓTIMO', 'EXCELENTE'].includes(newText)) {
             alert('Avaliação inválida. Por favor, escolha entre: RUIM, BOM, ÓTIMO, EXCELENTE');
             newText = prompt(`Para Avaliar o livro escolha: RUIM, BOM, ÓTIMO, EXCELENTE`, targetValue);
-            
           }
         } else {
-          // Para os outros campos, usa-se o prompt padrão
           newText = prompt(`Edite ${selectedStatus}:`, targetValue);
-          // Converte a entrada para maiúsculas
           newText = newText ? newText.toUpperCase() : '';
         }
-      
-        // Atualiza o valor do livro com o que foi editado
+
         if (newText !== null && newText !== '') {
           switch (selectedStatus) {
             case 'titulo':
@@ -164,30 +170,25 @@ function listarLivros(filtro = '') {
             case 'avaliacao':
               livro.avaliacao = newText.toUpperCase();
               break;
-              
           }
         }
       });
       
-      // Adicionando evento para salvar as alterações
       listItem.querySelector('.save').addEventListener('click', async function() {
         try {
-          // Clona o livro para evitar alterações diretamente no objeto original
           const livroModificado = { ...livro }; 
-      
           const response = await fetch(`http://localhost:3000/livros/${livro.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(livroModificado), // Envia o livro modificado
+            body: JSON.stringify(livroModificado),
           });
-      
+
           if (response.ok) {
             alert("Alterações salvas com sucesso!");
-            // Atualiza o catálogo com o livro modificado
             catalogoLivros[index] = { ...livroModificado };
-            listarLivros(filtro); // Atualiza a lista para refletir as mudanças
+            buscarLivro(filtro); // Atualiza a lista
           } else {
             console.error("Erro ao salvar as alterações");
           }
@@ -195,8 +196,7 @@ function listarLivros(filtro = '') {
           console.error("Erro ao salvar o livro:", error);
         }
       });
-      
-      // Evento para excluir livro
+
       listItem.querySelector('.delete').addEventListener('click', async function() {
         const confirmDelete = confirm("Tem certeza de que deseja excluir este livro?");
         if (confirmDelete) {
@@ -207,11 +207,10 @@ function listarLivros(filtro = '') {
 
             if (response.ok) {
               alert("Livro excluído com sucesso!");
-              catalogoLivros.splice(index, 1); // Remove o livro do frontend
-              listarLivros(filtro); // Atualiza a lista para refletir a exclusão
+              catalogoLivros.splice(index, 1);
+              buscarLivro(filtro); // Atualiza a lista
             } else {
-              const errorMsg = await response.text();
-              console.error("Erro ao excluir o livro:", errorMsg);
+              console.error("Erro ao excluir o livro");
             }
           } catch (error) {
             console.error('Erro ao excluir o livro:', error);
@@ -221,17 +220,21 @@ function listarLivros(filtro = '') {
 
       catalogoList.appendChild(listItem);
     });
+  } else {
+    catalogoList.innerHTML = '<p>Nenhum livro encontrado.</p>';
+  }
 }
 
-document.querySelector('#exibirLivrosBtn').addEventListener('click', () => {
-  listarLivros();
-});
-
-document.querySelector('#buscarLivrosBtn').addEventListener('click', () => {
+document.querySelector('#buscarLivroBtn').addEventListener('click', async () => {
   const filtro = document.querySelector('#buscaInput').value;
-  listarLivros(filtro);
+  
+  // Espera o catálogo ser carregado antes de buscar
+  if (catalogoLivros.length === 0) {
+    await carregarCatalogo(); // Carrega os livros se o catálogo estiver vazio
+  }
+  
+  buscarLivro(filtro); // Realiza a busca após o catálogo estar carregado
 });
 
-carregarCatalogo();
 
 

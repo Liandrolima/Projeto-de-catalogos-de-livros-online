@@ -12,11 +12,11 @@ async function listarLivros() {
        
         <div class="livro-item">
           <div class="livro-info">
-            <span class="titulo"><strong>TÍTULO:</strong> <em>${livro.titulo}</em></span>
-            <span class="autor"><strong>AUTOR:</strong> <em>${livro.autor}</em></span>
-            <span class="genero"><strong>GÊNERO:</strong> <em>${livro.genero}</em></span>
-            <span class="ano"><strong>ANO:</strong> <em>${livro.ano}</em></span>
-            <span class="avaliacao"><strong>AVALIAÇÃO:</strong> <em>${livro.avaliacao}</em></span>
+            <span class="titulo"><strong>TÍTULO:</strong> <em>${livro.titulo.toUpperCase()}</em></span>
+            <span class="autor"><strong>AUTOR:</strong> <em>${livro.autor.toUpperCase()}</em></span>
+            <span class="genero"><strong>GÊNERO:</strong> <em>${livro.genero.toUpperCase()}</em></span>
+            <span class="ano"><strong>ANO:</strong> <em>${livro.ano.toUpperCase()}</em></span>
+            <span class="avaliacao"><strong>AVALIAÇÃO:</strong> <em>${livro.avaliacao.toUpperCase()}</em></span>
           </div>
 
           <div class="livro-actions">
@@ -29,7 +29,6 @@ async function listarLivros() {
               <option value="avaliacao">Avaliação</option>
             </select>
             
-            <input type="text" class="edit-input" placeholder="Novo valor" style="display: none;">
             <button class="save" style="display: none;">Salvar Alterações</button>
             <button class="delete">Excluir Livro</button>
           </div>
@@ -37,7 +36,6 @@ async function listarLivros() {
       `;
 
       const select = li.querySelector('.tarefa');
-      const input = li.querySelector('.edit-input');
       const saveButton = li.querySelector('.save');
       const deleteButton = li.querySelector('.delete');
 
@@ -49,19 +47,19 @@ async function listarLivros() {
         // Define o valor correspondente com base no campo selecionado
         switch (selectedStatus) {
           case 'titulo':
-            targetValue = livro.titulo;
+            targetValue = livro.titulo.toUpperCase();
             break;
           case 'autor':
-            targetValue = livro.autor;
+            targetValue = livro.autor.toUpperCase();
             break;
           case 'genero':
-            targetValue = livro.genero;
+            targetValue = livro.genero.toUpperCase();
             break;
           case 'ano':
-            targetValue = livro.ano;
+            targetValue = livro.ano.toUpperCase();
             break;
           case 'avaliacao':
-            targetValue = livro.avaliacao;
+            targetValue = livro.avaliacao.toUpperCase();
             break;
           default:
             return; // Caso nenhum valor válido seja selecionado

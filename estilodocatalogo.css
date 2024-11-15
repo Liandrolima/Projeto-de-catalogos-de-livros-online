@@ -55,7 +55,7 @@ nav {
   padding: 10px;
   border-radius: 10px;
   overflow: hidden;  
-  animation: aparecerLentamente 5s ease-in-out forwards;
+  animation: aparecerLentamente 2s ease-in-out forwards;
 }
 
 @keyframes aparecerLentamente {
