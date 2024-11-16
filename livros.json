@@ -1,26 +1,10 @@
 [
   {
-    "titulo": "vida11111111111111111111",
+    "titulo": "vida",
     "autor": "eu",
     "genero": "prosa",
     "ano": "2023",
     "avaliacao": "status",
     "id": 1
-  },
-  {
-    "titulo": "vida11111111111111111111",
-    "autor": "eu",
-    "genero": "prosa",
-    "ano": "2023",
-    "avaliacao": "status",
-    "id": 2
-  },
-  {
-    "titulo": "vida11111111111111111111",
-    "autor": "eu",
-    "genero": "prosa",
-    "ano": "2023",
-    "avaliacao": "status",
-    "id": 3
   }
 ]

@@ -22,28 +22,8 @@ document.querySelector('#livroForm').addEventListener('submit', async function(e
 
   const livro = { titulo, autor, genero, ano, avaliacao };
 
-  
-
-  const livroExistente = catalogoLivros.some(item => item.titulo === livro.titulo && item.autor === livro.autor);
-
-  if (livroExistente) {
-    document.getElementById('mensagem').innerHTML = 'O livro já está no catálogo!!';
-    setTimeout(() => {
-        document.getElementById('mensagem').innerHTML = '';
-    }, 3000); // Limpa a mensagem após 3 segundos
-
-    document.querySelector('#livroTitulo').value = '';
-    document.querySelector('#livroAutor').value = '';
-    document.querySelector('#livroGenero').value = '';
-    document.querySelector('#livroAno').value = '';
-    document.querySelector('#livroAvaliacao').value = '';
-    return;
-}
-
-
-  catalogoLivros.push(livro);
-
   try {
+    // Enviar o livro para a API (backend)
     const response = await fetch('http://localhost:3000/livros', {
       method: 'POST',
       headers: {
@@ -54,26 +34,33 @@ document.querySelector('#livroForm').addEventListener('submit', async function(e
 
     if (response.ok) {
       alert('Livro adicionado com sucesso!');
+      // Atualiza o catálogo local com o livro recém-adicionado
+      const livroAdicionado = await response.json();
+      catalogoLivros.push(livroAdicionado);
+    } else {
+      const errorData = await response.json();
+      alert(errorData.message); // Exibe a mensagem de erro do backend
     }
   } catch (error) {
     console.error('Erro ao salvar o livro:', error);
   }
 
-  document.querySelector('#livroForm').reset();
+  document.querySelector('#livroForm').reset(); // Limpar o formulário
 });
+
 
 async function buscarLivro(filtro = '') {
   const catalogoList = document.querySelector('#catalogoList');
   catalogoList.innerHTML = '';  // Limpa a lista de livros
 
   if (!filtro.trim()) {
-    catalogoList.innerHTML = '<p>Por favor, digite o nome do livro ou do autor para buscar.</p>';
+    alert('Por favor, digite o nome do livro ou do autor para buscar')
     return;
   }
 
   // Verifique se o catálogo foi carregado corretamente
   if (catalogoLivros.length === 0) {
-    catalogoList.innerHTML = '<p>Não há livros carregados no catálogo.</p>';
+    alert('Não há livros carregados no catálogo')
     return;
   }
 

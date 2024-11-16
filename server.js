@@ -42,7 +42,6 @@ const salvarLivros = () => {
   }
 };
 
-
 // Carrega os livros ao iniciar o servidor
 carregarLivros();
 
@@ -51,12 +50,19 @@ app.get('/livros', (req, res) => {
   res.json(livros);
 });
 
-// Rota para adicionar um novo livro
+// Rota para adicionar um novo livro com verificação de duplicidade
 app.post('/livros', (req, res) => {
-  const novoLivro = req.body;
+  const { titulo, autor, ano } = req.body;
+
+  // Verifica se o livro já existe no catálogo
+  const livroExistente = livros.find(livro => livro.titulo === titulo && livro.autor === autor && livro.ano === ano);
+
+  if (livroExistente) {
+    return res.status(400).json({ message: 'Este livro já existe no catálogo.' });
+  }
 
   // Adiciona um ID único ao novo livro
-  novoLivro.id = livros.length > 0 ? Math.max(...livros.map(livro => livro.id)) + 1 : 1;
+  const novoLivro = { ...req.body, id: livros.length > 0 ? Math.max(...livros.map(livro => livro.id)) + 1 : 1 };
 
   livros.push(novoLivro);
   salvarLivros(); // Salva o catálogo no arquivo
@@ -97,9 +103,6 @@ app.delete('/livros/:id', (req, res) => {
     res.status(404).json({ message: 'Livro não encontrado!' });
   }
 });
-
-
-
 
 // Iniciar o servidor
 app.listen(PORT, () => {
